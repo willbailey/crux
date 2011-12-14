@@ -160,8 +160,6 @@ var SomeObject = B.create({
 
 var InheritSomeObject = SomeObject.extend({
 
-  foo: 1,
-
   bar: 1,
 
   fooChanged: function(val, priorVal) {
