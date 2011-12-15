@@ -47,13 +47,17 @@ B.extend = function(__super__, proto) {
           var priorVal = this[__PROP__ + key];
           if (priorVal !== val) {
             this[__PROP__ + key] = val;
-            var handler = this[key + 'Changed'];
-            if (handler) handler(val, priorVal);
-            if (this.trigger && !opts.quiet) {
-              var changedProperties = {};
-              changedProperties[key] = {newVal: val, priorVal: priorVal};
-              this.trigger(this.events.CHANGED, changedProperties);
-            }
+            // defer handlers
+            var _this = this;
+            setTimeout(function() {
+              var handler = _this[key + 'Changed'];
+              if (handler) handler(val, priorVal);
+              if (_this.trigger && !opts.quiet) {
+                var changedProperties = {};
+                changedProperties[key] = {newVal: val, priorVal: priorVal};
+                _this.trigger(_this.events.CHANGED, changedProperties);
+              }
+            }, 0);
           }
         };
 
@@ -75,9 +79,7 @@ B.extend = function(__super__, proto) {
         klass.prototype['set' + base] = setter;
         klass.prototype['get' + base] = getter;
 
-        // calling the explict setter allows you to pass additional options
-        // such as quiet that will squelch change notifications
-        setter.call(klass.prototype, proto[key], {quiet: true});
+        klass.prototype[__PROP__ + key] = proto[key];
       })(key);
     }
   }
