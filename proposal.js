@@ -145,7 +145,7 @@ var Base = B.extend(function Base() {}, {
 // EXAMPLE
 /////////////////////////////////////////////////////////////////
 
-var SomeObject = Base.extend({
+var SomeClass = Base.extend({
   foo: 1,
 
   fooChanged: function(val, priorVal) {
@@ -155,7 +155,7 @@ var SomeObject = Base.extend({
 
 });
 
-var InheritSomeObject = SomeObject.extend({
+var InheritSomeClass = SomeClass.extend({
 
   bar: 1,
 
@@ -165,9 +165,9 @@ var InheritSomeObject = SomeObject.extend({
   }
 
 });
-var so = new InheritSomeObject();
+var someObject = new InheritSomeClass();
 
-var AnotherObject = Base.extend({
+var AnotherClass = Base.extend({
 
   baz: 1,
 
@@ -196,7 +196,7 @@ var AnotherObject = Base.extend({
 // passing in an object to listen to. The method of listening is arbitrary and
 // not necessarily part of the framework. This just demonstrates using events
 // to listen to changes on external objects
-var anotherObject = new AnotherObject({
+var anotherObject = new AnotherClass({
   exampleListeningObject: someObject
 });
 
