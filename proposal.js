@@ -140,15 +140,12 @@ var Base = B.extend(function Base() {}, {
   }
 });
 
-// function for creating a new class that inherits from the base
-B.create = function(proto) {return B.extend(Base, proto);};
-
 
 /////////////////////////////////////////////////////////////////
 // EXAMPLE
 /////////////////////////////////////////////////////////////////
 
-var SomeObject = B.create({
+var SomeObject = Base.extend({
   foo: 1,
 
   fooChanged: function(val, priorVal) {
@@ -170,7 +167,7 @@ var InheritSomeObject = SomeObject.extend({
 });
 var so = new InheritSomeObject();
 
-var AnotherObject = B.create({
+var AnotherObject = Base.extend({
 
   baz: 1,
 
