@@ -1,23 +1,22 @@
 document.addEventListener('DOMContentLoaded', function() {
 
   test('extend', function() {
-    var Parent = function Parent(){};
-    var Child = B.extend(Parent, {});
+    var Child = CX.extend({});
     var child = new Child();
-    ok(child instanceof Parent);
+    ok(child instanceof CX);
 
     var AnotherChild = Child.extend({});
     var anotherChild = new AnotherChild();
-    ok(anotherChild instanceof Parent);
+    ok(anotherChild instanceof CX);
 
-    ok(Base);
-    ok(Base.prototype.trigger);
-    ok(Base.prototype.listen);
-    ok(Base.prototype.removeListener);
+    ok(CX);
+    ok(CX.prototype.trigger);
+    ok(CX.prototype.listen);
+    ok(CX.prototype.removeListener);
   });
 
   test('setters', function() {
-    var Class = Base.extend({
+    var Class = CX.extend({
       foo: 0,
       bar: 1,
       baz: 2,
@@ -36,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   test('events', function() {
-    var Class = Base.extend({
+    var Class = CX.extend({
       foo: 1,
       bar: 2,
       baz: 3
@@ -57,8 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   test('binding', function() {
-    var SomeClass = Base.extend({foo: 1});
-    var AnotherClass = Base.extend({bar: 2});
+    var SomeClass = CX.extend({foo: 1});
+    var AnotherClass = CX.extend({bar: 2});
     var obj = new SomeClass();
     var obj2 = new AnotherClass();
     obj.bind(obj2, ['foo', 'bar'] /* ... */);

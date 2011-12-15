@@ -1,13 +1,11 @@
 'use strict';
 
-var B = typeof exports !== 'undefined' ? exports : {};
-
 // prefix for internal property state
 var __PROP__ = '__PROP__';
 
 // default constructor used in setting up prototype chain
 var ctor = function() {};
-B.extend = function(__super__, proto) {
+var extend = function(__super__, proto) {
   var klass;
 
   if (proto.hasOwnProperty('constructor')) {
@@ -79,13 +77,13 @@ B.extend = function(__super__, proto) {
   }
 
   // call extend from the class itself optionally
-  klass.extend = function(proto) {return B.extend(klass, proto);};
+  klass.extend = function(proto) {return crux.extend(klass, proto);};
   return klass;
 };
 
 // Base class everything is derived from that provides events for observing
 // state changes from the outside
-var Base = B.extend(function Base() {}, {
+var CX = extend(function Base() {}, {
 
   // list of events the base class provides
   events: {
