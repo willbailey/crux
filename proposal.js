@@ -135,8 +135,7 @@ var Base = B.extend(function Base() {}, {
     for (var i = 0, l = list.length, callback; i < l; i++) {
       callback = calls[i];
       if (callback.fn === fn) {
-        list.splice(i, 1);
-        i--;
+        list.splice(i--, 1);
       }
     }
   }
