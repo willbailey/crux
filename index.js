@@ -5,7 +5,7 @@ var __PROP__ = '__PROP__';
 
 // default constructor used in setting up prototype chain
 var ctor = function() {};
-var extend = function(__super__, proto) {
+function extend(__super__, proto) {
   var klass;
 
   if (proto.hasOwnProperty('constructor')) {
@@ -77,9 +77,9 @@ var extend = function(__super__, proto) {
   }
 
   // call extend from the class itself optionally
-  klass.extend = function(proto) {return crux.extend(klass, proto);};
+  klass.extend = function(proto) {return extend(klass, proto);};
   return klass;
-};
+}
 
 // Base class everything is derived from that provides events for observing
 // state changes from the outside
