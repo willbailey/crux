@@ -1,6 +1,3 @@
-/////////////////////////////////////////////////////////////////
-// FRAMEWORK
-/////////////////////////////////////////////////////////////////
 'use strict';
 
 var B = typeof exports !== 'undefined' ? exports : {};
@@ -48,16 +45,13 @@ B.extend = function(__super__, proto) {
           if (priorVal !== val) {
             this[__PROP__ + key] = val;
             // defer handlers
-            var _this = this;
-            setTimeout(function() {
-              var handler = _this[key + 'Changed'];
-              if (handler) handler(val, priorVal);
-              if (_this.trigger && !opts.quiet) {
-                var changedProperties = {};
-                changedProperties[key] = {newVal: val, priorVal: priorVal};
-                _this.trigger(_this.events.CHANGED, changedProperties);
-              }
-            }, 0);
+            var handler = this[key + 'Changed'];
+            if (handler) handler.call(this, val, priorVal);
+            if (this.trigger && !opts.quiet) {
+              var changedProperties = {};
+              changedProperties[key] = {newVal: val, priorVal: priorVal};
+              this.trigger(this.events.CHANGED, changedProperties);
+            }
           }
         };
 
@@ -133,75 +127,31 @@ var Base = B.extend(function Base() {}, {
       return;
     }
     for (var i = 0, l = list.length, callback; i < l; i++) {
-      callback = calls[i];
+      callback = list[i];
       if (callback.fn === fn) {
-        list.splice(i--, 1);
+        list.splice(i, 1);
       }
     }
-  }
-});
-
-
-/////////////////////////////////////////////////////////////////
-// EXAMPLE
-/////////////////////////////////////////////////////////////////
-
-var SomeClass = Base.extend({
-  foo: 1,
-
-  fooChanged: function(val, priorVal) {
-    // Changed functions are called when your internal state changes
-    console.log('some object foo changed', arguments);
-  }
-
-});
-
-var InheritSomeClass = SomeClass.extend({
-
-  bar: 1,
-
-  fooChanged: function(val, priorVal) {
-    // these can be inherited as well
-    console.log('inherited object foo changed', arguments);
-  }
-
-});
-var someObject = new InheritSomeClass();
-
-var AnotherClass = Base.extend({
-
-  baz: 1,
-
-  constructor: function(opts) {
-    var o = opts.exampleListeningObject
-    // setting up a listener on an external object...could be done anywhere
-    // not just in the constructor
-    o.listen('changed', this.interestingObjectChanged, this);
   },
 
-  // listening for a change on an external object and setting an internal prop
-  interestingObjectChanged: function(changedProperties) {
-    console.log('notified of external change', changedProperties);
-    if (changedProperties.foo) {
-      this.baz = changedProperties.foo.newVal;
+  bind: function(obj) {
+    var tuples = Array.prototype.slice.call(arguments, 1);
+    var _this = this;
+    obj.listen('changed', function(changedProps) {
+      for (var i = 0, len = tuples.length; i < len; i++) {
+        var tuple = tuples[i];
+        var iProp = tuple[0];
+        var bProp = tuple[1];
+        if (changedProps[bProp]) {
+          _this[iProp] = changedProps[bProp].newVal;
+        }
+      }
+    });
+    for (var i2 = 0, len2 = tuples.length; i2 < len2; i2++) {
+      var tuple = tuples[i2];
+      var iProp = tuple[0];
+      var bProp = tuple[1];
+      this[iProp] = obj[bProp];
     }
-  },
-
-  // listening for the internal change
-  bazChanged: function(val, priorVal) {
-    console.log('another object baz changed', arguments);
   }
-
 });
-
-// passing in an object to listen to. The method of listening is arbitrary and
-// not necessarily part of the framework. This just demonstrates using events
-// to listen to changes on external objects
-var anotherObject = new AnotherClass({
-  exampleListeningObject: someObject
-});
-
-// setting property foo of someObject triggers someObjects internal fooChanged
-// handler as well as anotherObjects listener which in turn updates its internal
-// state triggering its own internal state change handler
-someObject.foo = 2;
